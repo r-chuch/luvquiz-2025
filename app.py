@@ -4,55 +4,69 @@ import pandas as pd
 # --- 網頁配置 ---
 st.set_page_config(page_title="2025 沛辰與峪銓的真愛大考驗", page_icon="💖", layout="centered")
 
-# --- 甜蜜風格 CSS ---
+# --- 甜蜜風格 CSS (已修正手機深色模式字體變白問題) ---
 st.markdown("""
     <style>
+    /* 全域背景顏色 */
     .stApp {
-        background-color: #fff5f7;
+        background-color: #fff5f7 !important;
     }
+
+    /* 強制修正深色模式下的文字顏色衝突 */
+    /* 這裡鎖定所有標籤、段落、標題與一般文字為深灰色 */
+    .stApp, .stApp p, .stApp span, .stApp label, .stApp div, .stApp h1, .stApp h2, .stApp h3 {
+        color: #31333f !important;
+    }
+
     .main-title {
-        color: #ff4b82;
+        color: #ff4b82 !important;
         text-align: center;
         font-family: 'Microsoft JhengHei', sans-serif;
         font-weight: bold;
         padding: 20px;
+        margin-bottom: 10px;
     }
+
     .question-box {
-        background-color: white;
+        background-color: white !important;
         padding: 25px;
         border-radius: 20px;
         box-shadow: 0 4px 15px rgba(255, 75, 130, 0.1);
         margin-bottom: 20px;
         border-left: 10px solid #ffb6c1;
     }
+
     .feedback-box {
         text-align: center;
-        background-color: white;
+        background-color: white !important;
         padding: 30px;
         border-radius: 25px;
         border: 3px solid #ffb6c1;
         box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
     }
+
     .category-badge {
-        background-color: #ff8fa3;
-        color: white;
+        background-color: #ff8fa3 !important;
+        color: white !important;
         padding: 4px 12px;
         border-radius: 50px;
         font-size: 0.8em;
         margin-bottom: 10px;
         display: inline-block;
     }
+
     .hint-text {
-        color: #999;
+        color: #999 !important;
         font-size: 0.9em;
         font-style: italic;
         margin-bottom: 15px;
     }
+
     /* 按鈕樣式 */
     div.stButton > button {
-        background-color: white;
-        color: #ff4b82;
-        border: 2px solid #ffb6c1;
+        background-color: white !important;
+        color: #ff4b82 !important;
+        border: 2px solid #ffb6c1 !important;
         border-radius: 15px;
         padding: 10px 20px;
         font-size: 16px;
@@ -60,37 +74,25 @@ st.markdown("""
         width: 100%;
         margin-bottom: 10px;
     }
+
     div.stButton > button:hover {
-        background-color: #ffb6c1;
-        color: white;
-        border: 2px solid #ffb6c1;
+        background-color: #ffb6c1 !important;
+        color: white !important;
+        border: 2px solid #ffb6c1 !important;
     }
+
     .result-card {
         text-align: center;
-        background: white;
+        background: white !important;
         padding: 40px;
         border-radius: 30px;
         border: 5px solid #ffc0cb;
         margin-bottom: 30px;
     }
-    /* 統計表格樣式 */
-    .stats-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-    }
-    .stats-table th {
-        background-color: #ffb6c1;
-        color: white;
-        padding: 12px;
-        text-align: left;
-    }
-    .stats-table td {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
-        font-size: 0.9em;
+
+    /* 針對表格文字進行強制修正 */
+    [data-testid="stDataFrame"] div {
+        color: #31333f !important;
     }
     </style>
     """, unsafe_allow_html=True)
