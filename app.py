@@ -4,31 +4,41 @@ import pandas as pd
 # --- 網頁配置 ---
 st.set_page_config(page_title="2025 沛辰與峪銓的真愛大考驗", page_icon="💖", layout="centered")
 
-# --- 甜蜜風格 CSS (已修正手機深色模式字體變白問題) ---
+# --- 甜蜜風格 CSS (最終強化版：徹底杜絕白色文字) ---
 st.markdown("""
     <style>
-    /* 全域背景顏色 */
+    /* 1. 強制背景顏色 */
     .stApp {
         background-color: #fff5f7 !important;
     }
 
-    /* 強制修正深色模式下的文字顏色衝突 */
-    /* 這裡鎖定所有標籤、段落、標題與一般文字為深灰色 */
-    .stApp, .stApp p, .stApp span, .stApp label, .stApp div, .stApp h1, .stApp h2, .stApp h3 {
+    /* 2. 最嚴格的全域文字鎖定：將所有標準文字元素強制設為深灰色 */
+    html, body, [data-testid="stAppViewContainer"], .stApp, .stApp p, .stApp span, .stApp label, .stApp li {
         color: #31333f !important;
     }
 
+    /* 3. 標題與重點文字強制鎖定 */
     .main-title {
-        color: #ff4b82 !important;
+        color: #ff4b82 !important; /* 主標題用粉紅色 */
         text-align: center;
         font-family: 'Microsoft JhengHei', sans-serif;
         font-weight: bold;
         padding: 20px;
         margin-bottom: 10px;
+        display: block;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #31333f !important;
+    }
+
+    /* 4. 區塊樣式強制白色背景 */
+    .question-box, .feedback-box, .result-card {
+        background-color: white !important;
+        color: #31333f !important;
     }
 
     .question-box {
-        background-color: white !important;
         padding: 25px;
         border-radius: 20px;
         box-shadow: 0 4px 15px rgba(255, 75, 130, 0.1);
@@ -38,7 +48,6 @@ st.markdown("""
 
     .feedback-box {
         text-align: center;
-        background-color: white !important;
         padding: 30px;
         border-radius: 25px;
         border: 3px solid #ffb6c1;
@@ -56,42 +65,28 @@ st.markdown("""
     }
 
     .hint-text {
-        color: #999 !important;
+        color: #888888 !important;
         font-size: 0.9em;
         font-style: italic;
         margin-bottom: 15px;
     }
 
-    /* 按鈕樣式 */
+    /* 5. 按鈕樣式強制顯色 */
     div.stButton > button {
         background-color: white !important;
         color: #ff4b82 !important;
         border: 2px solid #ffb6c1 !important;
         border-radius: 15px;
-        padding: 10px 20px;
-        font-size: 16px;
-        transition: all 0.3s;
-        width: 100%;
-        margin-bottom: 10px;
+        font-weight: bold;
     }
 
     div.stButton > button:hover {
         background-color: #ffb6c1 !important;
         color: white !important;
-        border: 2px solid #ffb6c1 !important;
     }
 
-    .result-card {
-        text-align: center;
-        background: white !important;
-        padding: 40px;
-        border-radius: 30px;
-        border: 5px solid #ffc0cb;
-        margin-bottom: 30px;
-    }
-
-    /* 針對表格文字進行強制修正 */
-    [data-testid="stDataFrame"] div {
+    /* 6. 表格內容強制深色 */
+    [data-testid="stDataFrame"] * {
         color: #31333f !important;
     }
     </style>
@@ -126,10 +121,11 @@ if 'step' not in st.session_state:
     st.session_state.is_done = False
     st.session_state.show_feedback = False
     st.session_state.last_result = None 
-    st.session_state.history = [] # 儲存答題統計
+    st.session_state.history = [] 
 
 # --- UI 邏輯 ---
-st.markdown("<h1 class='main-title'>💖 2025 真愛默契挑戰 💖</h1>", unsafe_allow_html=True)
+# 這裡的主標題使用了寫死的 inline style 顏色
+st.markdown("<h1 class='main-title' style='color: #ff4b82 !important;'>💖 2025 真愛默契挑戰 💖</h1>", unsafe_allow_html=True)
 
 if not st.session_state.is_done:
     current_q = questions[st.session_state.step]
@@ -139,15 +135,16 @@ if not st.session_state.is_done:
         res = st.session_state.last_result
         st.markdown('<div class="feedback-box">', unsafe_allow_html=True)
         
+        # 這裡將 st.write 改為手動 HTML 標籤，確保顏色不會被手機深色模式蓋掉
         if res['correct']:
-            st.markdown("<h2 style='color: #4CAF50;'>✅ 答對了！太棒了！</h2>", unsafe_allow_html=True)
-            st.write(f"妳選了：**{res['user_pick']}**")
-            st.write("不愧是我的寶貝，這都記得！🥰")
+            st.markdown("<h2 style='color: #4CAF50 !important;'>✅ 答對了！太棒了！</h2>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #31333f !important;'>妳選了：<b>{res['user_pick']}</b></p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #31333f !important;'>不愧是我的寶貝，這都記得！🥰</p>", unsafe_allow_html=True)
         else:
-            st.markdown("<h2 style='color: #f44336;'>❌ 答錯咯～再接再厲！</h2>", unsafe_allow_html=True)
-            st.write(f"妳選了：**{res['user_pick']}**")
-            st.write(f"正確答案是：<span style='color: #ff4b82; font-weight: bold;'>{res['correct_ans']}</span>", unsafe_allow_html=True)
-            st.write("是不是讀書讀太累了？沒關係抱我一下就沒事了 😋")
+            st.markdown("<h2 style='color: #f44336 !important;'>❌ 答錯咯～再接再厲！</h2>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #31333f !important;'>妳選了：<b>{res['user_pick']}</b></p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #31333f !important;'>正確答案是：<span style='color: #ff4b82; font-weight: bold;'>{res['correct_ans']}</span></p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #31333f !important;'>是不是讀書讀太累了？沒關係抱我一下就沒事了 😋</p>", unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
         st.write("") 
@@ -163,12 +160,12 @@ if not st.session_state.is_done:
     # --- 答題模式 ---
     else:
         st.progress((st.session_state.step) / len(questions))
-        st.write(f"目前進度：{st.session_state.step + 1} / {len(questions)}")
+        st.markdown(f"<p style='color: #31333f !important;'>目前進度：{st.session_state.step + 1} / {len(questions)}</p>", unsafe_allow_html=True)
         
         st.markdown(f"""
         <div class="question-box">
             <div class="category-badge">{current_q['cat']}</div>
-            <h3 style='color: #333;'>{current_q['q']}</h3>
+            <h3 style='color: #333 !important;'>{current_q['q']}</h3>
             <p class="hint-text">{current_q['h']}</p>
         </div>
         """, unsafe_allow_html=True)
@@ -180,9 +177,8 @@ if not st.session_state.is_done:
                     st.session_state.score += 1
                     st.balloons()
                 
-                # 紀錄到歷史統計中
                 st.session_state.history.append({
-                    "題目": current_q['q'][:20] + "...", # 截斷字串避免表格太長
+                    "題目": current_q['q'][:20] + "...",
                     "妳的回答": option,
                     "正確答案": current_q['a'],
                     "結果": "✅" if is_correct else "❌"
@@ -199,20 +195,19 @@ if not st.session_state.is_done:
 else:
     # --- 結束畫面與統計表 ---
     st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-    st.title("🎉 挑戰完成 🎉")
+    st.markdown("<h1 style='color: #31333f !important;'>🎉 挑戰完成 🎉</h1>", unsafe_allow_html=True)
     final_score = st.session_state.score
-    st.header(f"最終得分：{final_score} / {len(questions)}")
+    st.markdown(f"<h2 style='color: #ff4b82 !important;'>最終得分：{final_score} / {len(questions)}</h2>", unsafe_allow_html=True)
     
     if final_score == len(questions):
-        st.subheader("🏆 滿分！妳絕對是我的真愛靈魂伴侶！愛妳唷 ❤️")
+        st.markdown("<h3 style='color: #31333f !important;'>🏆 滿分！妳絕對是我的真愛靈魂伴侶！愛妳唷 ❤️</h3>", unsafe_allow_html=True)
     elif final_score >= 12:
-        st.subheader("✨ 超棒！我們的回憶妳都記得很清楚呢～ 🥰")
+        st.markdown("<h3 style='color: #31333f !important;'>✨ 超棒！我們的回憶妳都記得很清楚呢～ 🥰</h3>", unsafe_allow_html=True)
     else:
-        st.subheader("🧐 哎呀～罰妳重看聊天紀錄，然後親我一下！ 🐶")
+        st.markdown("<h3 style='color: #31333f !important;'>🧐 哎呀～罰妳重看聊天紀錄，然後親我一下！ 🐶</h3>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # 顯示統計表格
-    st.write("### 📊 答題戰報回顧")
+    st.markdown("<h3 style='color: #31333f !important;'>📊 答題戰報回顧</h3>", unsafe_allow_html=True)
     df = pd.DataFrame(st.session_state.history)
     st.dataframe(df, use_container_width=True, hide_index=True)
 
